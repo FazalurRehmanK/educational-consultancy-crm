@@ -14,22 +14,27 @@
 <body>
 
     <h1>Educational Consultancy Portal</h1>
-    
+
     <div class="form-box">
         <h3>New Student Application</h3>
+        {% if error %}
+            <div style="background-color: #ffcccc; color: #cc0000; padding: 10px; margin-bottom: 10px; border-radius: 5px; font-weight: bold;">
+                {{ error }}
+            </div>
+        {% endif %}
         <form method="POST">
             {% csrf_token %}
-            
+
             <input type="text" name="first_name" placeholder="First Name" required>
             <input type="text" name="last_name" placeholder="Last Name" required>
             <input type="email" name="email" placeholder="Email Address" required>
-            
+
             <select name="target_country">
                 <option value="Germany">Germany</option>
                 <option value="USA">United States</option>
                 <option value="Italy">Italy</option>
             </select>
-            
+
             <button type="submit">Submit Application</button>
         </form>
     </div>
