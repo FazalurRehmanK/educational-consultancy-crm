@@ -7,9 +7,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased">
+    {% if messages %}
+        <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-2">
+            {% for message in messages %}
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-md shadow-lg flex items-center transition-opacity duration-500" role="alert">
+                    <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <p class="font-bold">{{ message }}</p>
+                </div>
+            {% endfor %}
+        </div>
 
+        <script>
+            setTimeout(() => {
+                const toast = document.getElementById('toast-container');
+                if (toast) {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 500); // Removes from page entirely
+                }
+            }, 3000);
+        </script>
+    {% endif %}
     <div class="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        
+
         <header class="mb-10 border-b border-gray-200 pb-5">
             <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Educational Consultancy Portal</h1>
             <p class="mt-2 text-sm text-gray-500">Manage student leads and international applications securely.</p>
@@ -17,7 +36,7 @@
 
         <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-12">
             <h3 class="text-xl font-bold text-gray-800 mb-6">New Student Application</h3>
-            
+
             {% if error %}
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-md">
                     <div class="flex">
@@ -30,7 +49,7 @@
 
             <form method="POST" class="space-y-5">
                 {% csrf_token %}
-                
+
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
@@ -55,7 +74,7 @@
                         <option value="Italy">Italy</option>
                     </select>
                 </div>
-                
+
                 <button type="submit" class="w-full sm:w-auto mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-sm transition duration-150 ease-in-out">
                     Submit Application
                 </button>
@@ -71,7 +90,7 @@
                     <div class="mt-4 space-y-2 text-sm text-gray-600">
                         <p><span class="font-medium text-gray-500">Target:</span> {{ lead.target_country }}</p>
                         <p class="flex items-center">
-                            <span class="font-medium text-gray-500 mr-2">Status:</span> 
+                            <span class="font-medium text-gray-500 mr-2">Status:</span>
                             <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
                                 {{ lead.status }}
                             </span>
