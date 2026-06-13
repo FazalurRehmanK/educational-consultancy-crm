@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Consultant Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f9; }
+        .card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .status { font-weight: bold; color: #0066cc; }
+        .form-box { background: #eef; padding: 20px; margin-bottom: 30px; border-radius: 8px; border: 1px solid #ccd; }
+        input, select, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; display: block; }
+        button { background-color: #0066cc; color: white; border: none; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Educational Consultancy Portal</h1>
+    
+    <div class="form-box">
+        <h3>New Student Application</h3>
+        <form method="POST">
+            {% csrf_token %}
+            
+            <input type="text" name="first_name" placeholder="First Name" required>
+            <input type="text" name="last_name" placeholder="Last Name" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            
+            <select name="target_country">
+                <option value="Germany">Germany</option>
+                <option value="USA">United States</option>
+                <option value="Italy">Italy</option>
+            </select>
+            
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+
+    <hr>
+    <h2>Active Applications</h2>
+
+    {% for lead in leads %}
+        <div class="card">
+            <h3>{{ lead.first_name }} {{ lead.last_name }}</h3>
+            <p><strong>Target:</strong> {{ lead.target_country }}</p>
+            <p><strong>Current Status:</strong> <span class="status">{{ lead.status }}</span></p>
+        </div>
+    {% empty %}
+        <p>No student leads found in the database.</p>
+    {% endfor %}
+
+</body>
+</html>
