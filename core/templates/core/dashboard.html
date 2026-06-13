@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultancy Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style> [x-cloak] { display: none !important; } </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased">
     {% if messages %}
@@ -34,16 +36,19 @@
             <p class="mt-2 text-sm text-gray-500">Manage student leads and international applications securely.</p>
         </header>
 
-        <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-12">
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-12"
+             x-data="{
+                 email: '',
+                 get isValidEmail() {
+                     return this.email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+                 }
+             }">
+
             <h3 class="text-xl font-bold text-gray-800 mb-6">New Student Application</h3>
 
             {% if error %}
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-md">
-                    <div class="flex">
-                        <div class="ml-3">
-                            <p class="text-sm font-medium text-red-800">{{ error }}</p>
-                        </div>
-                    </div>
+                    <p class="text-sm font-medium text-red-800">{{ error }}</p>
                 </div>
             {% endif %}
 
@@ -63,7 +68,14 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input type="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    <input type="email" name="email" required
+                           x-model="email"
+                           :class="isValidEmail ? 'border-gray-300 focus:ring-blue-500 focus:border-blue-500' : 'border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50 text-red-900'"
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 outline-none transition">
+
+                    <p x-show="!isValidEmail" x-cloak class="mt-1 text-sm text-red-600 font-medium">
+                        Please enter a valid email address.
+                    </p>
                 </div>
 
                 <div>
@@ -75,7 +87,10 @@
                     </select>
                 </div>
 
-                <button type="submit" class="w-full sm:w-auto mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-sm transition duration-150 ease-in-out">
+                <button type="submit"
+                        :disabled="!isValidEmail || email === ''"
+                        :class="isValidEmail && email !== '' ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'"
+                        class="w-full sm:w-auto mt-4 text-white font-semibold py-2.5 px-6 rounded-lg shadow-sm transition duration-150 ease-in-out">
                     Submit Application
                 </button>
             </form>
