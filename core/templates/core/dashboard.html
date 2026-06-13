@@ -1,56 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Consultant Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f9; }
-        .card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .status { font-weight: bold; color: #0066cc; }
-        .form-box { background: #eef; padding: 20px; margin-bottom: 30px; border-radius: 8px; border: 1px solid #ccd; }
-        input, select, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; display: block; }
-        button { background-color: #0066cc; color: white; border: none; cursor: pointer; font-weight: bold; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultancy Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
-    <h1>Educational Consultancy Portal</h1>
+    <div class="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        
+        <header class="mb-10 border-b border-gray-200 pb-5">
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Educational Consultancy Portal</h1>
+            <p class="mt-2 text-sm text-gray-500">Manage student leads and international applications securely.</p>
+        </header>
 
-    <div class="form-box">
-        <h3>New Student Application</h3>
-        {% if error %}
-            <div style="background-color: #ffcccc; color: #cc0000; padding: 10px; margin-bottom: 10px; border-radius: 5px; font-weight: bold;">
-                {{ error }}
-            </div>
-        {% endif %}
-        <form method="POST">
-            {% csrf_token %}
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-12">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">New Student Application</h3>
+            
+            {% if error %}
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-md">
+                    <div class="flex">
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-red-800">{{ error }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
 
-            <input type="text" name="first_name" placeholder="First Name" required>
-            <input type="text" name="last_name" placeholder="Last Name" required>
-            <input type="email" name="email" placeholder="Email Address" required>
+            <form method="POST" class="space-y-5">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <input type="text" name="first_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <input type="text" name="last_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    </div>
+                </div>
 
-            <select name="target_country">
-                <option value="Germany">Germany</option>
-                <option value="USA">United States</option>
-                <option value="Italy">Italy</option>
-            </select>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                </div>
 
-            <button type="submit">Submit Application</button>
-        </form>
-    </div>
-
-    <hr>
-    <h2>Active Applications</h2>
-
-    {% for lead in leads %}
-        <div class="card">
-            <h3>{{ lead.first_name }} {{ lead.last_name }}</h3>
-            <p><strong>Target:</strong> {{ lead.target_country }}</p>
-            <p><strong>Current Status:</strong> <span class="status">{{ lead.status }}</span></p>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Target Country</label>
+                    <select name="target_country" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition">
+                        <option value="Germany">Germany</option>
+                        <option value="USA">United States</option>
+                        <option value="Italy">Italy</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="w-full sm:w-auto mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-sm transition duration-150 ease-in-out">
+                    Submit Application
+                </button>
+            </form>
         </div>
-    {% empty %}
-        <p>No student leads found in the database.</p>
-    {% endfor %}
+
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Active Applications</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for lead in leads %}
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition duration-200">
+                    <h3 class="text-lg font-bold text-gray-900">{{ lead.first_name }} {{ lead.last_name }}</h3>
+                    <div class="mt-4 space-y-2 text-sm text-gray-600">
+                        <p><span class="font-medium text-gray-500">Target:</span> {{ lead.target_country }}</p>
+                        <p class="flex items-center">
+                            <span class="font-medium text-gray-500 mr-2">Status:</span> 
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                {{ lead.status }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-span-full text-center py-10 bg-white rounded-xl border border-dashed border-gray-300">
+                    <p class="text-gray-500">No student leads found in the database.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
 
 </body>
 </html>
