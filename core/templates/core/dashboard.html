@@ -1,122 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" 
+      x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }" 
+      x-init="$watch('darkMode', val => localStorage.setItem('theme', val ? 'dark' : 'light'))" 
+      :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultancy Portal</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Tells Tailwind to look for the 'dark' class on the HTML tag
+        }
+    </script>
+    
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style> [x-cloak] { display: none !important; } </style>
+    
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-800 font-sans antialiased">
-    {% if messages %}
-        <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-2">
-            {% for message in messages %}
-                <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-md shadow-lg flex items-center transition-opacity duration-500" role="alert">
-                    <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                    <p class="font-bold">{{ message }}</p>
-                </div>
-            {% endfor %}
-        </div>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans antialiased transition-colors duration-300">
 
-        <script>
-            setTimeout(() => {
-                const toast = document.getElementById('toast-container');
-                if (toast) {
-                    toast.style.opacity = '0';
-                    setTimeout(() => toast.remove(), 500); // Removes from page entirely
-                }
-            }, 3000);
-        </script>
-    {% endif %}
     <div class="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-
-        <header class="mb-10 border-b border-gray-200 pb-5">
-            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Educational Consultancy Portal</h1>
-            <p class="mt-2 text-sm text-gray-500">Manage student leads and international applications securely.</p>
+        
+        <header class="mb-10 border-b border-gray-200 dark:border-gray-700 pb-5 flex justify-between items-end">
+            <div>
+                <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">Educational Consultancy Portal</h1>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Manage student leads and international applications securely.</p>
+            </div>
+            
+            <button @click="darkMode = !darkMode" 
+                    class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                <svg x-show="darkMode" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg x-show="!darkMode" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
         </header>
 
-        <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-12"
-             x-data="{
-                 email: '',
-                 get isValidEmail() {
-                     return this.email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
-                 }
+        {% if messages %}
+            <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-2">
+                {% for message in messages %}
+                    <div class="bg-green-100 dark:bg-green-900 border-l-4 border-green-500 text-green-800 dark:text-green-100 p-4 rounded-md shadow-lg flex items-center transition-opacity duration-500" role="alert">
+                        <svg class="w-5 h-5 mr-2 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        <p class="font-bold">{{ message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toast-container');
+                    if (toast) {
+                        toast.style.opacity = '0';
+                        setTimeout(() => toast.remove(), 500);
+                    }
+                }, 3000);
+            </script>
+        {% endif %}
+
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-12 transition-colors duration-300" 
+             x-data="{ 
+                 email: '', 
+                 get isValidEmail() { 
+                     return this.email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email); 
+                 } 
              }">
-
-            <h3 class="text-xl font-bold text-gray-800 mb-6">New Student Application</h3>
-
+            
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">New Student Application</h3>
+            
             {% if error %}
-                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-md">
-                    <p class="text-sm font-medium text-red-800">{{ error }}</p>
+                <div class="bg-red-50 dark:bg-red-900 border-l-4 border-red-500 p-4 mb-6 rounded-r-md">
+                    <p class="text-sm font-medium text-red-800 dark:text-red-100">{{ error }}</p>
                 </div>
             {% endif %}
 
             <form hx-post="/" hx-target="body" hx-swap="innerHTML" class="space-y-5">
                 {% csrf_token %}
-
+                
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                        <input type="text" name="first_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
+                        <input type="text" name="first_name" required class="w-full px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                        <input type="text" name="last_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
+                        <input type="text" name="last_name" required class="w-full px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input type="email" name="email" required
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                    <input type="email" name="email" required 
                            x-model="email"
-                           :class="isValidEmail ? 'border-gray-300 focus:ring-blue-500 focus:border-blue-500' : 'border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50 text-red-900'"
-                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 outline-none transition">
-
-                    <p x-show="!isValidEmail" x-cloak class="mt-1 text-sm text-red-600 font-medium">
+                           :class="isValidEmail ? 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500' : 'bg-red-50 dark:bg-red-900 border-red-500 focus:ring-red-500 focus:border-red-500 text-red-900 dark:text-red-100'"
+                           class="w-full px-4 py-2 text-gray-900 dark:text-white border rounded-lg focus:ring-2 outline-none transition-colors">
+                    <p x-show="!isValidEmail" x-cloak class="mt-1 text-sm text-red-600 dark:text-red-400 font-medium">
                         Please enter a valid email address.
                     </p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Target Country</label>
-                    <select name="target_country" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Target Country</label>
+                    <select name="target_country" class="w-full px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                         <option value="Germany">Germany</option>
                         <option value="USA">United States</option>
                         <option value="Italy">Italy</option>
                     </select>
                 </div>
-
-                <button type="submit"
+                
+                <button type="submit" 
                         :disabled="!isValidEmail || email === ''"
-                        :class="isValidEmail && email !== '' ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'"
+                        :class="isValidEmail && email !== '' ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer' : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'"
                         class="w-full sm:w-auto mt-4 text-white font-semibold py-2.5 px-6 rounded-lg shadow-sm transition duration-150 ease-in-out">
                     Submit Application
                 </button>
             </form>
         </div>
 
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Active Applications</h2>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Active Applications</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for lead in leads %}
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition duration-200">
-                    <h3 class="text-lg font-bold text-gray-900">{{ lead.first_name }} {{ lead.last_name }}</h3>
-                    <div class="mt-4 space-y-2 text-sm text-gray-600">
-                        <p><span class="font-medium text-gray-500">Target:</span> {{ lead.target_country }}</p>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition duration-200">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ lead.first_name }} {{ lead.last_name }}</h3>
+                    <div class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <p><span class="font-medium text-gray-500 dark:text-gray-500">Target:</span> {{ lead.target_country }}</p>
                         <p class="flex items-center">
-                            <span class="font-medium text-gray-500 mr-2">Status:</span>
-                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                            <span class="font-medium text-gray-500 dark:text-gray-500 mr-2">Status:</span> 
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
                                 {{ lead.status }}
                             </span>
                         </p>
                     </div>
                 </div>
             {% empty %}
-                <div class="col-span-full text-center py-10 bg-white rounded-xl border border-dashed border-gray-300">
-                    <p class="text-gray-500">No student leads found in the database.</p>
+                <div class="col-span-full text-center py-10 bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 transition-colors duration-300">
+                    <p class="text-gray-500 dark:text-gray-400">No student leads found in the database.</p>
                 </div>
             {% endfor %}
         </div>
